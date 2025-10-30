@@ -1,5 +1,6 @@
 package com.devsuperior.dsmovie.services;
 
+import com.devsuperior.dsmovie.dto.MovieGenreDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -28,10 +29,23 @@ public class MovieService {
 	}
 
 	@Transactional(readOnly = true)
+	public Page<MovieGenreDTO> findAllMovieGenre(String title, Pageable pageable) {
+		Page<MovieEntity> result = repository.searchByTitle(title, pageable);
+		return result.map(x -> new MovieGenreDTO(x));
+	}
+
+	@Transactional(readOnly = true)
 	public MovieDTO findById(Long id) {
 		MovieEntity result = repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
 		return new MovieDTO(result);
+	}
+
+	@Transactional(readOnly = true)
+	public MovieGenreDTO findByIdMovieGenre(Long id) {
+		MovieEntity result = repository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
+		return new MovieGenreDTO(result);
 	}
 
 	@Transactional
